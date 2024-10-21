@@ -1,16 +1,21 @@
 <script lang=ts>
 	import { onMount } from 'svelte';
 	import { Camera } from "./Camera";
+	import { HandDetector } from './HandDetector';
 
-	let videoElement: HTMLVideoElement;
+	let video: HTMLVideoElement;
 	let webcam: Camera;
+	let detector: HandDetector;
 
 	onMount(() => {
-		webcam = new Camera(videoElement!);
-		webcam.init().then(() => {
-				console.log('Webcam initialized');
-		}).catch((error) => {
-				console.error('Failed to initialize webcam:', error);
+		webcam = new Camera(video!);
+		webcam.init().catch((error) => {
+			console.error('Failed to initialize webcam:', error);
+		});
+
+		detector = new HandDetector();
+		detector.init().catch((error) => {
+			console.error('Failed to initialize detector:', error);
 		});
 	})
 </script>
@@ -23,7 +28,7 @@
 <section class="container">
 	<div id="canvas">
 		<!-- svelte-ignore a11y-media-has-caption -->
-		<video bind:this={videoElement} id="webcam" height="500" width="500"></video>
+		<video bind:this={video} id="webcam" playsinline></video>
 	</div>
 </section>
 
@@ -43,5 +48,7 @@
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
 	}
 </style>
