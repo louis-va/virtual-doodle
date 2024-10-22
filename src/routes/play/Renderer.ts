@@ -63,17 +63,6 @@ export class Renderer {
       keypoints.push({ x: 0, y: 0 });
     }
 
-    // Create a circle for each keypoint
-    const circles: Graphics[] = [];
-    keypoints.forEach(() => {
-      const circle = new Graphics();
-      circle.circle(0, 0, 5);
-      circle.fill(0xff0000);
-      circle.visible = false; // Hide initially
-      circles.push(circle);
-      this.app!.stage.addChild(circle);
-    });
-
     // Define connections
     const connections = [
       [0,1], [1,2], [2,3], [3,4],
@@ -87,6 +76,17 @@ export class Renderer {
     // Create a line for each connection
     const lines = new Graphics();
     this.app!.stage.addChild(lines);
+
+    // Create a circle for each keypoint
+    const circles: Graphics[] = [];
+    keypoints.forEach(() => {
+      const circle = new Graphics();
+      circle.circle(0, 0, 5);
+      circle.fill(0xff0000);
+      circle.visible = false; // Hide initially
+      circles.push(circle);
+      this.app!.stage.addChild(circle);
+    });
 
     // Start ticker
     this.app.ticker.add(async () => {
