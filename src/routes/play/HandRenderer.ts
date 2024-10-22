@@ -104,12 +104,22 @@ export class HandRenderer {
     this.pixi.ticker.add(async () => {
       const hands = await this.detector!.run(this.video); // Detect hands in the video
 
-      lines.clear();
+      lines.clear(); // Reset lines
 
       if (hands.length > 0 && hands[0].keypoints) {
+        // Use only first hand
+        const hand = hands[0].keypoints;
+        
+        // Check if thumb and index tips touch
+        const handSize = (Math.abs(hand[0].x - hand[1].x) + Math.abs(hand[0].y - hand[1].y))*0.5;
+        const touch = (
+          Math.abs(hand[4].x - hand[8].x) < handSize && 
+          Math.abs(hand[4].y - hand[8].y) < handSize
+        ) 
+
         // Update keypoints position
         keypoints.forEach((point, index) => {
-          const keypoint = hands[0].keypoints[index];
+          const keypoint = hand[index];
           point.x = keypoint.x * scaleX;
           point.y = keypoint.y * scaleY;
         });
@@ -117,6 +127,17 @@ export class HandRenderer {
         // Place circles at keypoint positions
         circles.forEach((circle, index) => {
           const keypoint = keypoints[index];
+
+          // Clear previous drawings
+          circle.clear();
+          // Set new fill color based on condition
+          if (touch && (index === 4 || index === 8)) {
+            circle.circle(0, 0, 8);
+            circle.fill(COLORS.touch);
+          } else {
+            circle.circle(0, 0, 4);
+            circle.fill(COLORS.hand);
+          }
           circle.position.set(keypoint.x, keypoint.y);
           circle.visible = true;
         });

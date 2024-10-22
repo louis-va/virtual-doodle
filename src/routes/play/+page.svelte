@@ -36,14 +36,10 @@
 		z-index: 10;
 	}
 	#canvas {
-		height: 90vmin;
-		width: 90vmin;
-		border: 2px solid rgba(var(--item-bg), 0.4);
-		outline: 1px solid rgba(var(--item-bg), 0.1);
-		outline-offset: 1rem;
-		border-radius: var(--item-rounded);
+		height: 100%;
+		width: 100%;
 		background-size: 1rem 1rem;
-  	background-image: radial-gradient(circle, rgba(var(--item-bg), 0.2) 1px, rgba(0, 0, 0, 0) 1px);
+  	background-image: radial-gradient(circle, rgba(var(--item-bg), 0.1) 1px, rgba(0, 0, 0, 0) 1px);
 		background-position: center;
 	}
 </style>
