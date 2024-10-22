@@ -7,8 +7,7 @@ const DETECTOR_CONFIG = {
   runtime: 'mediapipe',
   maxHands: 1,
   modelType: 'full',
-  solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands'
-                // or 'base/node_modules/@mediapipe/hands' in npm.
+  solutionPath: '/node_modules/@mediapipe/hands' // or https://cdn.jsdelivr.net/npm/@mediapipe/hands
 } as handPoseDetection.MediaPipeHandsMediaPipeModelConfig;
 
 const ESTIMATION_CONFIG = {flipHorizontal: true};

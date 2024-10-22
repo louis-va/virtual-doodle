@@ -21,7 +21,7 @@
 <div bind:this={canvas} id="canvas"></div>
 
 <!-- svelte-ignore a11y-media-has-caption -->
-<video bind:this={video} id="webcam" aria-hidden></video>
+<video bind:this={video} id="webcam" muted playsinline aria-hidden></video>
 
 <style>
 	#canvas {
