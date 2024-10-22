@@ -30,6 +30,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@tensorflow-models/hand-pose-detection": "^2.0.1"
+		"@tensorflow-models/hand-pose-detection": "^2.0.1",
+		"pixi.js": "^8.5.1"
 	}
 }

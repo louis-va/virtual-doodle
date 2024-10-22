@@ -1,22 +1,15 @@
 <script lang=ts>
 	import { onMount } from 'svelte';
-	import { Camera } from "./Camera";
-	import { HandDetector } from './HandDetector';
+	import { Renderer } from './Renderer';
 
 	let video: HTMLVideoElement;
-	let webcam: Camera;
-	let detector: HandDetector;
+	let canvas: HTMLElement;
+	let renderer: Renderer;
 
-	onMount(() => {
-		webcam = new Camera(video!);
-		webcam.init().catch((error) => {
-			console.error('Failed to initialize webcam:', error);
-		});
-
-		detector = new HandDetector();
-		detector.init().catch((error) => {
-			console.error('Failed to initialize detector:', error);
-		});
+	onMount(async () => {
+		renderer = new Renderer(canvas, video);
+		await renderer.init();
+		renderer.start();
 	})
 </script>
 
@@ -25,30 +18,17 @@
 	<meta name="description" content="Psychic Doodle Game" />
 </svelte:head>
 
-<section class="container">
-	<div id="canvas">
-		<!-- svelte-ignore a11y-media-has-caption -->
-		<video bind:this={video} id="webcam" playsinline></video>
-	</div>
-</section>
+<div bind:this={canvas} id="canvas"></div>
+
+<!-- svelte-ignore a11y-media-has-caption -->
+<video bind:this={video} id="webcam" aria-hidden></video>
 
 <style>
-	.container {
-		display: flex;
-		width: 100vw;
-		height: 100vh;
-		align-items: center;
-		justify-content: center;
-	}
 	#canvas {
-		width: 100vmin;
-  	height: 100vmin;
+		width: 100%;
+  	height: auto;
 	}
 	#webcam {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
+		display: none;
 	}
 </style>
