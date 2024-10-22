@@ -2,15 +2,27 @@ import { Application, Graphics } from 'pixi.js';
 import { Camera } from "./Camera";
 import { HandDetector } from './HandDetector';
 
-export class Renderer {
-  private canvas: HTMLElement;
-  private app: Application | undefined;
-  private detector: HandDetector | undefined;
-  private video: HTMLVideoElement;
+const COLORS = {
+  hand: 0x00FF4D,
+  touch: 0xFF0051,
+}
 
-  constructor(canvas: HTMLElement, video: HTMLVideoElement) {
-    this.canvas = canvas;
-    this.video = video;
+export class HandRenderer {
+  private container: HTMLElement;
+  private video: HTMLVideoElement;
+  private pixi: Application | undefined;
+  private detector: HandDetector | undefined;
+
+  constructor(container: HTMLElement) {
+    this.container = container;
+
+    // Create the video element
+    this.video = document.createElement('video');
+    this.video.style.display = 'none';
+    this.video.muted = true;
+    this.video.playsInline = true;
+    this.video.setAttribute('aria-hidden', 'true');
+    this.container.appendChild(this.video);
   }
 
   /**
@@ -18,12 +30,12 @@ export class Renderer {
    * and hand detector
    */
   public async init(): Promise<void> {
-    this.app = new Application();
-    await this.app.init({ resizeTo: window }).catch((error) => {
+    this.pixi = new Application();
+    await this.pixi.init({ resizeTo: window, antialias: true, backgroundAlpha: 0 }).catch((error) => {
 			console.error('Failed to initialize Pixi:', error);
       throw error(error);
 		});
-    this.canvas.appendChild(this.app.canvas);
+    this.container.appendChild(this.pixi.canvas);
 
     const webcam = new Camera(this.video);
     await webcam.init().catch((error) => {
@@ -43,15 +55,15 @@ export class Renderer {
    * and draw the hand on the canvas
    */
   public start(): void {
-    if (!this.app || !this.detector) {
+    if (!this.pixi || !this.detector) {
       throw new Error('Renderer not initialized.');
     }
 
     // Get video and canvas dimensions
     const videoWidth = this.video.videoWidth;
     const videoHeight = this.video.videoHeight;
-    const canvasWidth = this.app.renderer.width;
-    const canvasHeight = this.app.renderer.height;
+    const canvasWidth = this.pixi.renderer.width;
+    const canvasHeight = this.pixi.renderer.height;
 
     // Calculate scaling factors
     const scaleX = canvasWidth / videoWidth;
@@ -75,21 +87,21 @@ export class Renderer {
 
     // Create a line for each connection
     const lines = new Graphics();
-    this.app!.stage.addChild(lines);
+    this.pixi!.stage.addChild(lines);
 
     // Create a circle for each keypoint
     const circles: Graphics[] = [];
     keypoints.forEach(() => {
       const circle = new Graphics();
-      circle.circle(0, 0, 5);
-      circle.fill(0xff0000);
+      circle.circle(0, 0, 4);
+      circle.fill(COLORS.hand);
       circle.visible = false; // Hide initially
       circles.push(circle);
-      this.app!.stage.addChild(circle);
+      this.pixi!.stage.addChild(circle);
     });
 
     // Start ticker
-    this.app.ticker.add(async () => {
+    this.pixi.ticker.add(async () => {
       const hands = await this.detector!.run(this.video); // Detect hands in the video
 
       lines.clear();
@@ -117,7 +129,7 @@ export class Renderer {
           const y2 = keypoints[connection[1]].y;
           lines.moveTo(x1, y1);
           lines.lineTo(x2, y2);
-          lines.stroke({ width: 1, color: 0x00ff00 });
+          lines.stroke({ width: 1, color: COLORS.hand });
         })
       } else {
         // Hide circles if no hands are detected

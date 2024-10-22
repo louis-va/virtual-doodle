@@ -1,3 +1,4 @@
+// RESET
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -10,6 +11,7 @@ html, body {
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  background-color: rgb(var(--bg));
 }
 img, picture, video, canvas, svg {
   display: block;
