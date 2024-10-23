@@ -1,6 +1,7 @@
 <script lang=ts>
 	import { onMount } from 'svelte';
-	import { HandRenderer } from './HandRenderer';
+	import { HandRenderer } from './HandRenderer.svelte';
+	import { inputPoints } from './state.svelte';
 
 	let handContainer: HTMLElement | undefined = $state();
 	let renderer: HandRenderer;

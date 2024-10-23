@@ -1,10 +1,12 @@
 import { Application, Graphics } from 'pixi.js';
 import { Camera } from "./Camera";
 import { HandDetector } from './HandDetector';
+import { inputPoints } from './state.svelte';
 
 const COLORS = {
   hand: 0x00FF4D,
   touch: 0xFF0051,
+  crosshair: 0xFEFFED
 }
 
 export class HandRenderer {
@@ -78,11 +80,10 @@ export class HandRenderer {
     // Define connections
     const connections = [
       [0,1], [1,2], [2,3], [3,4],
-      [0,5], [5,6], [6,7], [7,8],
+      [2,5], [0,5], [5,6], [6,7], [7,8],
       [5,9], [9,10], [10,11], [11,12],
       [9,13], [13,14], [14,15], [15,16],
       [0,17], [13,17], [17,18], [18,19], [19,20],
-      [2,5]
     ]
 
     // Create a line for each connection
@@ -93,12 +94,20 @@ export class HandRenderer {
     const circles: Graphics[] = [];
     keypoints.forEach(() => {
       const circle = new Graphics();
-      circle.circle(0, 0, 4);
-      circle.fill(COLORS.hand);
-      circle.visible = false; // Hide initially
       circles.push(circle);
       this.pixi!.stage.addChild(circle);
     });
+
+    // Create an indicator where the player will draw
+    const crosshair = new Graphics();
+    crosshair.circle(0, 0, 2);
+    crosshair.fill(COLORS.crosshair);
+    crosshair.visible = false;
+    this.pixi!.stage.addChild(crosshair);
+
+    // Define the time between inputPoints recording
+    let lastPushTime = 0;
+    const throttleInterval = 100; // milliseconds
 
     // Start ticker
     this.pixi.ticker.add(async () => {
@@ -112,10 +121,31 @@ export class HandRenderer {
         
         // Check if thumb and index tips touch
         const handSize = (Math.abs(hand[0].x - hand[1].x) + Math.abs(hand[0].y - hand[1].y))*0.5;
-        const touch = (
+        const isTouching = (
           Math.abs(hand[4].x - hand[8].x) < handSize && 
           Math.abs(hand[4].y - hand[8].y) < handSize
-        ) 
+        )
+
+        if (isTouching) {
+          // Calculate point between thumb and index tips
+          const drawCoordinates = {
+            x: ((hand[4].x + hand[8].x) / 2) * scaleX,
+            y: ((hand[4].y + hand[8].y) / 2) * scaleY,
+          }
+          
+          // Records coordonates where to draw, throttled to max 10x per second
+          const currentTime = Date.now();
+          if (currentTime - lastPushTime > throttleInterval) {
+            inputPoints.push([drawCoordinates.x, drawCoordinates.y]);
+            lastPushTime = currentTime;
+          }
+
+          // Display crosshair
+          crosshair.position.set(drawCoordinates.x, drawCoordinates.y);
+          crosshair.visible = true;
+        } else {
+          crosshair.visible = false;
+        }
 
         // Update keypoints position
         keypoints.forEach((point, index) => {
@@ -130,8 +160,8 @@ export class HandRenderer {
 
           // Clear previous drawings
           circle.clear();
-          // Set new fill color based on condition
-          if (touch && (index === 4 || index === 8)) {
+          // Set circles based on if thumb and index are touching
+          if (isTouching && (index === 4 || index === 8)) {
             circle.circle(0, 0, 8);
             circle.fill(COLORS.touch);
           } else {
