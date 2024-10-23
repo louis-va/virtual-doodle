@@ -104,7 +104,7 @@ export class HandRenderer {
 
     // Define the time between inputPoints recording
     let lastPushTime = 0;
-    const throttleInterval = 50; // milliseconds
+    const throttleInterval = 25; // milliseconds
 
     // Define the time between the creation of a new stroke when the user stops drawing
     // This is to avoid creating new strokes when the touch detector skips a loop
@@ -124,11 +124,14 @@ export class HandRenderer {
         const hand = hands[0].keypoints;
         
         // Check if thumb and index tips touch
-        const touchDetectionLength = (Math.abs(hand[0].x - hand[1].x) + Math.abs(hand[0].y - hand[1].y))*0.4;
-        const isTouching = (
-          Math.abs(hand[4].x - hand[8].x) < touchDetectionLength && 
-          Math.abs(hand[4].y - hand[8].y) < touchDetectionLength
-        )
+        const thumbTip = hand[4];
+        const indexTip = hand[8];
+        const distance = Math.sqrt(
+          Math.pow(thumbTip.x - indexTip.x, 2) + 
+          Math.pow(thumbTip.y - indexTip.y, 2)
+        );
+        const touchThreshold = 25;
+        const isTouching = distance < touchThreshold;
 
         // Calculate point between thumb and index tips
         const drawCoordinates = {
