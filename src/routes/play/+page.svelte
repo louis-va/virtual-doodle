@@ -2,10 +2,11 @@
 	import { onMount } from 'svelte';
 	import { HandRenderer } from './HandRenderer';
 
-	let handContainer: HTMLElement;
+	let handContainer: HTMLElement | undefined = $state();
 	let renderer: HandRenderer;
 
 	onMount(async () => {
+		if (!handContainer) return;
 		renderer = new HandRenderer(handContainer);
 		await renderer.init();
 		renderer.start();
