@@ -2,21 +2,33 @@
   import { getStroke } from 'perfect-freehand';
   import type { StrokeOptions } from 'perfect-freehand';
   import { getSvgPathFromStroke } from '$lib';
-	import { inputPoints } from "./state.svelte";
+	import { inputStrokes } from "./state.svelte";
+
+  const strokeColor = '#FFFFFF'
 
   const options: StrokeOptions = {
-    size: 12,
+    size: 6,
     thinning: 0.5,
     smoothing: 0.5,
     streamline: 0.5,
   }
 
-  const stroke = $derived(getStroke(inputPoints, options));
-  const pathData = $derived(getSvgPathFromStroke(stroke));
+  // Create an svg path for each stroke
+  const pathsData = $derived.by(() => {
+    const data: string[] = [];
+    inputStrokes.forEach((inputStroke) => {
+      const stroke = getStroke(inputStroke, options);
+      const pathData = getSvgPathFromStroke(stroke);
+      data.push(pathData);
+    })
+    return data;
+  })
 </script>
 
 <svg>
-  <path d={pathData} fill="white" stroke="white" />
+  {#each pathsData as pathData}
+    <path d={pathData} fill={strokeColor} stroke={strokeColor} />
+  {/each}
 </svg>
 
 <style>

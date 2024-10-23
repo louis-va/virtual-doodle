@@ -1,7 +1,7 @@
 import { Application, Graphics } from 'pixi.js';
 import { Camera } from "./Camera";
 import { HandDetector } from './HandDetector';
-import { inputPoints } from './state.svelte';
+import { addPoint, newStroke } from './state.svelte';
 
 const COLORS = {
   hand: 0x00FF4D,
@@ -28,8 +28,7 @@ export class HandRenderer {
   }
 
   /**
-   * Create Pixi application and initialize the camera
-   * and hand detector
+   * Create Pixi application and initialize the camera and hand detector
    */
   public async init(): Promise<void> {
     this.pixi = new Application();
@@ -53,8 +52,7 @@ export class HandRenderer {
   }
 
   /**
-   * Start detecting hands from the camera
-   * and draw the hand on the canvas
+   * Start detecting hands from the camera and draw the hand on the canvas
    */
   public start(): void {
     if (!this.pixi || !this.detector) {
@@ -102,16 +100,22 @@ export class HandRenderer {
     const crosshair = new Graphics();
     crosshair.circle(0, 0, 2);
     crosshair.fill(COLORS.crosshair);
-    crosshair.visible = false;
     this.pixi!.stage.addChild(crosshair);
 
     // Define the time between inputPoints recording
     let lastPushTime = 0;
     const throttleInterval = 50; // milliseconds
 
+    // Define the time between the creation of a new stroke when the user stops drawing
+    // This is to avoid creating new strokes when the touch detector skips a loop
+    let pausedTime = 0;
+    const pauseInterval = 100; // milliseconds
+
     // Start ticker
     this.pixi.ticker.add(async () => {
       const hands = await this.detector!.run(this.video); // Detect hands in the video
+
+      const currentTime = Date.now(); // Record current time
 
       lines.clear(); // Reset lines
 
@@ -120,31 +124,37 @@ export class HandRenderer {
         const hand = hands[0].keypoints;
         
         // Check if thumb and index tips touch
-        const handSize = (Math.abs(hand[0].x - hand[1].x) + Math.abs(hand[0].y - hand[1].y))*0.5;
+        const touchDetectionLength = (Math.abs(hand[0].x - hand[1].x) + Math.abs(hand[0].y - hand[1].y))*0.4;
         const isTouching = (
-          Math.abs(hand[4].x - hand[8].x) < handSize && 
-          Math.abs(hand[4].y - hand[8].y) < handSize
+          Math.abs(hand[4].x - hand[8].x) < touchDetectionLength && 
+          Math.abs(hand[4].y - hand[8].y) < touchDetectionLength
         )
 
+        // Calculate point between thumb and index tips
+        const drawCoordinates = {
+          x: ((hand[4].x + hand[8].x) / 2) * scaleX,
+          y: ((hand[4].y + hand[8].y) / 2) * scaleY,
+        }
+
+        // Display crosshair
+        crosshair.position.set(drawCoordinates.x, drawCoordinates.y);
+
         if (isTouching) {
-          // Calculate point between thumb and index tips
-          const drawCoordinates = {
-            x: ((hand[4].x + hand[8].x) / 2) * scaleX,
-            y: ((hand[4].y + hand[8].y) / 2) * scaleY,
-          }
+          // Reset pausedTime
+          pausedTime = 0;
           
-          // Records coordonates where to draw, throttled to max 10x per second
-          const currentTime = Date.now();
+          // Records coordonates where to draw, throttled to throttleInterval
           if (currentTime - lastPushTime > throttleInterval) {
-            inputPoints.push([drawCoordinates.x, drawCoordinates.y]);
+            addPoint([drawCoordinates.x, drawCoordinates.y]);
             lastPushTime = currentTime;
           }
-
-          // Display crosshair
-          crosshair.position.set(drawCoordinates.x, drawCoordinates.y);
-          crosshair.visible = true;
         } else {
-          crosshair.visible = false;
+          // Create new stroke if enough time has passed while drawing paused
+          pausedTime = pausedTime===0 ? currentTime : pausedTime;
+          if (currentTime - pausedTime > pauseInterval) {
+            newStroke();
+            lastPushTime = currentTime;
+          }
         }
 
         // Update keypoints position
