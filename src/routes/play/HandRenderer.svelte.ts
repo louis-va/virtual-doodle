@@ -107,7 +107,7 @@ export class HandRenderer {
 
     // Define the time between inputPoints recording
     let lastPushTime = 0;
-    const throttleInterval = 100; // milliseconds
+    const throttleInterval = 50; // milliseconds
 
     // Start ticker
     this.pixi.ticker.add(async () => {

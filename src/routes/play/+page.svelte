@@ -1,7 +1,7 @@
 <script lang=ts>
 	import { onMount } from 'svelte';
 	import { HandRenderer } from './HandRenderer.svelte';
-	import { inputPoints } from './state.svelte';
+	import Drawing from './drawing.svelte';
 
 	let handContainer: HTMLElement | undefined = $state();
 	let renderer: HandRenderer;
@@ -21,7 +21,9 @@
 
 <div class="container">
 	<div bind:this={handContainer} id="hand-container"></div>
-	<div id="canvas"></div>
+	<div id="canvas">
+		<Drawing />
+	</div>
 </div>
 
 <style>
