@@ -16,8 +16,8 @@
 </script>
 
 <svelte:head>
-	<title>Psychic Doodle</title>
-	<meta name="description" content="Psychic Doodle Game" />
+	<title>Virtual Doodle</title>
+	<meta name="description" content="Virtual Doodle Game" />
 </svelte:head>
 
 <div class="container">
