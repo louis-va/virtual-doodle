@@ -141,6 +141,7 @@ export class HandRenderer {
 
         // Display crosshair
         crosshair.position.set(drawCoordinates.x, drawCoordinates.y);
+        crosshair.visible = true;
 
         if (isTouching) {
           // Reset pausedTime
@@ -200,6 +201,7 @@ export class HandRenderer {
         circles.forEach((circle) => {
           circle.visible = false;
         });
+        crosshair.visible = false;
       }
     });
   }

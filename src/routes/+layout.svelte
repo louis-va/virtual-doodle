@@ -9,7 +9,7 @@
 <style global>
   :root {
     --bg: 23, 22, 23;
-    --item-bg: 254, 255, 237;
-    --item-rounded: 1rem; 
+    --ui-bg: 254, 255, 237;
+    --ui-fg: 23, 22, 23;
   }
 </style>
