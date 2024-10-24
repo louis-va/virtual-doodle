@@ -1,5 +1,5 @@
 <script lang=ts>
-  import { information } from './state.svelte';
+  import { information } from '../state.svelte';
 </script>
 
 <div class="container">

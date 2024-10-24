@@ -2,7 +2,7 @@
   import { getStroke } from 'perfect-freehand';
   import type { StrokeOptions } from 'perfect-freehand';
   import { getSvgPathFromStroke } from '$lib';
-	import { inputStrokes } from "./state.svelte";
+	import { inputStrokes } from "../state.svelte";
 
   const strokeColor = '#FFFFFF'
 

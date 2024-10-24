@@ -1,7 +1,7 @@
 import { Application, Graphics } from 'pixi.js';
 import { Camera } from "./Camera";
 import { HandDetector } from './HandDetector';
-import { addPoint, newStroke, information } from './state.svelte';
+import { addPoint, newStroke, information } from '../state.svelte';
 
 const COLORS = {
   hand: 0x00ff84,

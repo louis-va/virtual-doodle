@@ -1,5 +1,5 @@
 <script lang=ts>
-	import Radar from "./radar.svelte";
+	import Radar from "./Radar.svelte";
 </script>
 
 <section class="container">
@@ -75,6 +75,7 @@
 
 	.ui .info {
 		display: flex;
+		gap: .5rem;
 		height: 100%;
 	}
 </style>
