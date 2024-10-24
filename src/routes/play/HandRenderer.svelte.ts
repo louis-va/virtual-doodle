@@ -1,12 +1,12 @@
 import { Application, Graphics } from 'pixi.js';
 import { Camera } from "./Camera";
 import { HandDetector } from './HandDetector';
-import { addPoint, newStroke } from './state.svelte';
+import { addPoint, newStroke, information } from './state.svelte';
 
 const COLORS = {
-  hand: 0x00FF4D,
-  touch: 0xFF0051,
-  crosshair: 0xFEFFED
+  hand: 0x00ff84,
+  touch: 0xff004c,
+  cursor: 0xfeffed
 }
 
 export class HandRenderer {
@@ -97,10 +97,14 @@ export class HandRenderer {
     });
 
     // Create an indicator where the player will draw
-    const crosshair = new Graphics();
-    crosshair.circle(0, 0, 2);
-    crosshair.fill(COLORS.crosshair);
-    this.pixi!.stage.addChild(crosshair);
+    const cursor = new Graphics();
+    cursor.circle(0, 0, 2);
+    cursor.fill(COLORS.cursor);
+    this.pixi!.stage.addChild(cursor);
+
+    // Define the time between information update
+    let lastUpdateTime = 0;
+    const throttleUpdate = 100; // milliseconds
 
     // Define the time between inputPoints recording
     let lastPushTime = 0;
@@ -134,14 +138,23 @@ export class HandRenderer {
         const isTouching = distance < touchThreshold;
 
         // Calculate point between thumb and index tips
-        const drawCoordinates = {
+        const cursorCoordinates = {
           x: ((hand[4].x + hand[8].x) / 2) * scaleX,
           y: ((hand[4].y + hand[8].y) / 2) * scaleY,
         }
 
-        // Display crosshair
-        crosshair.position.set(drawCoordinates.x, drawCoordinates.y);
-        crosshair.visible = true;
+        // Display cursor
+        cursor.position.set(cursorCoordinates.x, cursorCoordinates.y);
+        cursor.visible = true;
+
+        // Set information
+        if (currentTime - lastUpdateTime > throttleUpdate) {
+          information.score = hands[0].score;
+          information.handedness = hands[0].handedness?.toLowerCase() as "left" | "right";
+          information.cursor.x = cursorCoordinates.x / scaleX / videoWidth * 100;
+          information.cursor.y = cursorCoordinates.y / scaleY / videoHeight * 100;
+          lastUpdateTime = currentTime
+        }
 
         if (isTouching) {
           // Reset pausedTime
@@ -149,7 +162,7 @@ export class HandRenderer {
           
           // Records coordonates where to draw, throttled to throttleInterval
           if (currentTime - lastPushTime > throttleInterval) {
-            addPoint([drawCoordinates.x, drawCoordinates.y]);
+            addPoint([cursorCoordinates.x, cursorCoordinates.y]);
             lastPushTime = currentTime;
           }
         } else {
@@ -201,7 +214,16 @@ export class HandRenderer {
         circles.forEach((circle) => {
           circle.visible = false;
         });
-        crosshair.visible = false;
+        cursor.visible = false;
+
+        // Set information
+        if (currentTime - lastUpdateTime > throttleUpdate) {
+          information.score = 0;
+          information.handedness = undefined;
+          information.cursor.x = undefined;
+          information.cursor.y = undefined;
+          lastUpdateTime = currentTime
+        }
       }
     });
   }

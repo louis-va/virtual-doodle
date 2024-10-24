@@ -8,6 +8,7 @@
 			<div class="title"><span>Interface</span></div>
 			<div class="tilted-block"></div>
 			<div class="tilted-block"></div>
+			<div class="tilted-block"></div>
 		</div>
 		<div class="ui">
 			<div class="info">
@@ -36,12 +37,13 @@
 
 	.title-bar {
 		display: flex;
+		align-items: end;
 	}
 	.title {
 		display: flex;
 		align-items: center;
 		padding: 0 .4rem;
-		width: 10rem;
+		width: 9rem;
 		height: 1.25rem;
 		background-color: rgba(var(--ui-bg), 0.825);
 		backdrop-filter: blur(5px);
@@ -54,12 +56,12 @@
 		color: rgb(var(--ui-fg));
 	}
 	.tilted-block {
-		width: 1.5rem;
+		width: 1.75rem;
 		height: 1.25rem;
 		backdrop-filter: blur(5px);
 		background-color: rgba(var(--ui-bg), 0.875);
 		clip-path: polygon(0 0, calc(100% - .75rem) 0, 100% 100%, .75rem 100%);
-		margin-left: -.5rem;
+		margin-left: -.625rem;
 	}
 
 	.ui {
