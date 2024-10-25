@@ -1,7 +1,7 @@
 import { Application, Graphics } from 'pixi.js';
 import { Camera } from "./Camera";
 import { HandDetector } from './HandDetector';
-import { addPoint, newStroke, information } from '../state.svelte';
+import { addPoint, newStroke, information, addPointToHistory } from '../state.svelte';
 
 const COLORS = {
   hand: 0x00ff84,
@@ -153,6 +153,10 @@ export class HandRenderer {
           information.handedness = hands[0].handedness?.toLowerCase() as "left" | "right";
           information.cursor.x = cursorCoordinates.x / scaleX / videoWidth * 100;
           information.cursor.y = cursorCoordinates.y / scaleY / videoHeight * 100;
+          addPointToHistory({
+            x: cursorCoordinates.x / scaleX / videoWidth * 100,
+            y: cursorCoordinates.y / scaleY / videoHeight * 100
+          });
           lastUpdateTime = currentTime
         }
 
@@ -222,6 +226,10 @@ export class HandRenderer {
           information.handedness = undefined;
           information.cursor.x = undefined;
           information.cursor.y = undefined;
+          addPointToHistory({
+            x: undefined,
+            y: undefined
+          });
           lastUpdateTime = currentTime
         }
       }

@@ -1,6 +1,7 @@
 <script lang=ts>
 	import Radar from "./Radar.svelte";
 	import Data from "./Data.svelte";
+	import Graphs from "./Graphs.svelte";
 </script>
 
 <section class="container">
@@ -13,6 +14,7 @@
 		<div class="ui">
 			<div class="info">
 				<Radar />
+				<Graphs />
 				<Data />
 			</div>
 		</div>
@@ -65,7 +67,7 @@
 	}
 
 	.ui {
-		width: 20rem;
+		width: 15rem;
 		height: 5rem;
 		padding: .4rem .4rem;
 		background-color: rgba(var(--ui-bg), 0.25);
@@ -75,7 +77,7 @@
 
 	.ui .info {
 		display: flex;
-		gap: .5rem;
+		gap: 1.25rem;
 		height: 100%;
 	}
 </style>

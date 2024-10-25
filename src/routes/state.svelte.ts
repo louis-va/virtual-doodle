@@ -1,15 +1,4 @@
-type Cursor = {
-  x: number | undefined,
-  y: number | undefined
-}
-
-type Information = {
-  score: number,
-  handedness: "left" | "right" | undefined,
-  cursor: Cursor,
-  cursorHistory: Cursor[]
-}
-
+// STROKES
 export const inputStrokes: Array<Array<[number, number]>> = $state([[]]);
 
 export function addPoint(point: [number, number]): void {
@@ -22,6 +11,19 @@ export function newStroke(): void {
   }
 }
 
+// INFORMATION
+type Cursor = {
+  x: number | undefined,
+  y: number | undefined
+}
+
+type Information = {
+  score: number,
+  handedness: "left" | "right" | undefined,
+  cursor: Cursor,
+  cursorHistory: Cursor[]
+}
+
 export const information: Information = $state({
   score: 0,
   handedness: undefined,
@@ -29,5 +31,10 @@ export const information: Information = $state({
     x: undefined,
     y: undefined
   },
-  cursorHistory: []
+  cursorHistory: new Array(12).fill({x: undefined, y: undefined})
 })
+
+export function addPointToHistory(point: Cursor): void {
+  information.cursorHistory.unshift(point);
+  information.cursorHistory.pop();
+}
