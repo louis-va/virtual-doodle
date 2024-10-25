@@ -87,7 +87,7 @@
 
 	.information .ui-wrapper {
 		display: flex;
-		gap: .75rem;
+		gap: .5rem;
 		height: 100%;
 	}
 
@@ -128,7 +128,7 @@
 	}
 
 	.actions .ui-bg {
-		width: 15rem;
+		width: 13rem;
 		height: 5rem;
 		padding: .4rem .4rem;
 		background-color: rgba(var(--ui-bg), 0.25);
@@ -140,7 +140,7 @@
 	.actions .ui-wrapper {
 		display: flex;
 		justify-content: end;
-		gap: .75rem;
+		gap: .5rem;
 		height: 100%;
 	}
 </style>
