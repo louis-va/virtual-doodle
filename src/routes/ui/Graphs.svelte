@@ -1,7 +1,5 @@
 <script lang=ts>
   import { information } from '../state.svelte';
-
-  $inspect(information.cursorHistory);
 </script>
 
 <div class="container">

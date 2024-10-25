@@ -112,6 +112,7 @@ export class HandRenderer {
 
     // Define the time between the creation of a new stroke when the user stops drawing
     // This is to avoid creating new strokes when the touch detector skips a loop
+    let isPaused = true;
     let pausedTime = 0;
     const pauseInterval = 100; // milliseconds
 
@@ -161,8 +162,12 @@ export class HandRenderer {
         }
 
         if (isTouching) {
-          // Reset pausedTime
-          pausedTime = 0;
+          // Create new stroke
+          if (isPaused) {
+            newStroke();
+            isPaused = false;
+            pausedTime = 0;
+          }
           
           // Records coordonates where to draw, throttled to throttleInterval
           if (currentTime - lastPushTime > throttleInterval) {
@@ -173,7 +178,7 @@ export class HandRenderer {
           // Create new stroke if enough time has passed while drawing paused
           pausedTime = pausedTime===0 ? currentTime : pausedTime;
           if (currentTime - pausedTime > pauseInterval) {
-            newStroke();
+            isPaused = true;
             lastPushTime = currentTime;
           }
         }

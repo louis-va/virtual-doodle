@@ -7,7 +7,21 @@ export function addPoint(point: [number, number]): void {
 
 export function newStroke(): void {
   if(inputStrokes[inputStrokes.length - 1].length) {
-    inputStrokes.push([])
+    inputStrokes.push([]);
+  }
+}
+
+export function undoLastStroke(): void {
+  inputStrokes.pop();
+  if (inputStrokes.length===0) {
+    inputStrokes.push([]);
+  }
+}
+
+export function deleteStrokes(): void {
+  inputStrokes.splice(0, inputStrokes.length, []);
+  if (inputStrokes.length===0) {
+    inputStrokes.push([]);
   }
 }
 

@@ -2,6 +2,7 @@
 	import Radar from "./Radar.svelte";
 	import Data from "./Data.svelte";
 	import Graphs from "./Graphs.svelte";
+	import Actions from "./Actions.svelte";
 </script>
 
 <section class="container">
@@ -26,6 +27,7 @@
 		</div>
 		<div class="ui-bg">
 			<div class="ui-wrapper">
+				<Actions />
 			</div>
 		</div>
 	</div>

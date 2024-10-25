@@ -40,6 +40,7 @@
 	.hand {
 		position: absolute;
 		z-index: 20;
+		pointer-events: none;
 	}
 	.canvas {
 		height: 100%;

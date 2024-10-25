@@ -83,14 +83,18 @@
     margin-top: .25rem;
     font-size: .5rem;
     text-transform: uppercase;
+    padding-bottom: .05rem;
   }
   .badge.success {
     background-color: rgb(var(--success));
+    color: rgb(var(--ui-fg));
   }
   .badge.warning {
     background-color: rgb(var(--warning));
+    color: rgb(var(--ui-fg));
   }
   .badge.error {
     background-color: rgb(var(--error));
+    color: rgb(var(--ui-fg));
   }
 </style>
