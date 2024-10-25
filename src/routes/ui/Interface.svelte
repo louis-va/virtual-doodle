@@ -17,6 +17,7 @@
 				<Graphs />
 				<Data />
 			</div>
+			<div class="lines"></div>
 		</div>
 	</div>
 	<div class="actions">
@@ -29,6 +30,7 @@
 			<div class="ui-wrapper">
 				<Actions />
 			</div>
+			<div class="lines"></div>
 		</div>
 	</div>
 </section>
@@ -70,12 +72,13 @@
 		width: 1.5rem;
 		height: 1rem;
 		backdrop-filter: blur(5px);
-		background-color: rgba(var(--ui-bg), 0.875);
+		background-color: rgba(var(--ui-bg), 0.825);
 		clip-path: polygon(0 0, calc(100% - .75rem) 0, 100% 100%, .75rem 100%);
 		margin-left: -.5rem;
 	}
 
 	.information .ui-bg {
+		position: relative;
 		width: 15rem;
 		height: 5rem;
 		padding: .4rem .4rem;
@@ -89,6 +92,22 @@
 		display: flex;
 		gap: .5rem;
 		height: 100%;
+	}
+
+	.information .lines {
+		position: absolute;
+		top: .25rem;
+		right: .25rem;
+		height: calc(100% - .5rem);
+		width: 1.25rem;
+		clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - .625rem), calc(100% - .625rem) 100%, 0% 100%);
+		background: repeating-linear-gradient(
+			-45deg,
+			rgba(var(--ui-bg), 0.125),
+			rgba(var(--ui-bg), 0.125) .125rem,
+			rgba(var(--ui-bg), 0) .125rem,
+			rgba(var(--ui-bg), 0) .25rem
+		);
 	}
 
 	/* ACTIONS */
@@ -122,12 +141,13 @@
 		width: 1.5rem;
 		height: 1rem;
 		backdrop-filter: blur(5px);
-		background-color: rgba(var(--ui-bg), 0.875);
+		background-color: rgba(var(--ui-bg), 0.825);
 		clip-path: polygon(.75rem 0, 100% 0, calc(100% - .75rem) 100%, 0 100%);
 		margin-right: -.5rem;
 	}
 
 	.actions .ui-bg {
+		position: relative;
 		width: 13rem;
 		height: 5rem;
 		padding: .4rem .4rem;
@@ -142,5 +162,21 @@
 		justify-content: end;
 		gap: .5rem;
 		height: 100%;
+	}
+
+	.actions .lines {
+		position: absolute;
+		top: .25rem;
+		left: .25rem;
+		height: calc(100% - .5rem);
+		width: 1.25rem;
+		clip-path: polygon(0% 0%, 100% 0%, 100% 100%, .625rem 100%, 0% calc(100% - .625rem));
+		background: repeating-linear-gradient(
+			45deg,
+			rgba(var(--ui-bg), 0.125),
+			rgba(var(--ui-bg), 0.125) .125rem,
+			rgba(var(--ui-bg), 0) .125rem,
+			rgba(var(--ui-bg), 0) .25rem
+		);
 	}
 </style>
